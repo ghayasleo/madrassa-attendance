@@ -17,6 +17,19 @@
       rel="stylesheet"
     />
     <title>Madrassa Attendance</title>
+    <script>
+      // Capture the PWA install prompt as early as possible. The
+      // `beforeinstallprompt` event can fire before the React app mounts its
+      // listeners, so we stash it here and notify the app via a custom event.
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        window.__deferredInstallPrompt = e;
+        window.dispatchEvent(new Event('pwa-install-available'));
+      });
+      window.addEventListener('appinstalled', function () {
+        window.__deferredInstallPrompt = null;
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

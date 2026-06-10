@@ -1,11 +1,21 @@
 import { useTranslation } from 'react-i18next';
-import { LogOut } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { LanguageToggle } from './LanguageToggle';
 
 export function TopBar() {
   const { t } = useTranslation();
-  const { profile, signOut } = useAuth();
+  const { profile } = useAuth();
+
+  const initials = profile?.full_name
+    ? profile.full_name
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join('')
+        .toUpperCase()
+    : '?';
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4">
@@ -13,22 +23,26 @@ export function TopBar() {
         <img src="/brand/logo-mark.svg" alt="" className="size-8 rounded-lg" />
         <span className="font-semibold text-gray-900">{t('common.appName')}</span>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         <LanguageToggle />
         {profile && (
-          <span className="hidden text-sm text-gray-500 sm:inline">
-            {profile.full_name} · {t(`roles.${profile.role}`)}
-          </span>
+          <Link
+            to="/settings"
+            className="flex items-center gap-2 rounded-lg py-1 ps-1.5 pe-2 transition-colors hover:bg-gray-100"
+          >
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
+              {initials}
+            </span>
+            <span className="hidden text-start sm:block">
+              <span className="block text-sm font-medium leading-tight text-gray-900">
+                {profile.full_name}
+              </span>
+              <span className="block text-xs leading-tight text-gray-500">
+                {t(`roles.${profile.role}`)}
+              </span>
+            </span>
+          </Link>
         )}
-        <button
-          type="button"
-          onClick={() => void signOut()}
-          className="inline-flex size-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 hover:text-red-600"
-          aria-label={t('common.signOut')}
-          title={t('common.signOut')}
-        >
-          <LogOut className="size-5" />
-        </button>
       </div>
     </header>
   );

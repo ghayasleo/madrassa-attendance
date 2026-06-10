@@ -45,7 +45,9 @@
     "students": "Students",
     "classes": "Classes",
     "attendance": "Attendance",
-    "reports": "Reports"
+    "reports": "Reports",
+    "settings": "Settings",
+    "installApp": "Install app"
   },
   "auth": {
     "title": "Sign in",
@@ -166,6 +168,30 @@
     "class": "Class",
     "total": "Total"
   },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "fullName": "Full name",
+    "phone": "Phone",
+    "email": "Email",
+    "role": "Role",
+    "saved": "Profile updated.",
+    "password": "Password",
+    "changePassword": "Change password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "passwordChanged": "Password updated.",
+    "passwordHint": "Only admins can change their password here. Teacher passwords are managed by an admin."
+  },
+  "install": {
+    "title": "Install app",
+    "iosStep1": "Tap the Share button in the toolbar.",
+    "iosStep2": "Choose \"Add to Home Screen\".",
+    "macSafariStep1": "Open the Share menu in the toolbar.",
+    "macSafariStep2": "Choose \"Add to Dock\".",
+    "desktopStep1": "Click the install icon at the end of the address bar.",
+    "desktopStep2": "Choose \"Install\". If you don't see the icon, open the browser menu (⋮) and choose \"Install\" / \"Apps\"."
+  },
   "errors": {
     "generic": "Something went wrong. Please try again.",
     "network": "Network error. Check your connection.",
@@ -173,6 +199,7 @@
     "classOverlap": "This student already has a class at an overlapping time: {{name}}.",
     "required": "This field is required.",
     "invalidEmail": "Enter a valid email.",
-    "minPassword": "Password must be at least 6 characters."
+    "minPassword": "Password must be at least 6 characters.",
+    "passwordMismatch": "Passwords do not match."
   }
 }

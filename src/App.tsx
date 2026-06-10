@@ -8,6 +8,7 @@ import { ClassesPage } from '@/features/classes/ClassesPage';
 import { StudentsPage } from '@/features/students/StudentsPage';
 import { TeachersPage } from '@/features/teachers/TeachersPage';
 import { ReportsPage } from '@/features/reports/ReportsPage';
+import { SettingsPage } from '@/features/settings/SettingsPage';
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
             }
           />
           <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
