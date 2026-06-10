@@ -16,7 +16,7 @@ export function useStudents() {
     queryFn: async (): Promise<StudentWithSubject[]> => {
       const { data, error } = await supabase
         .from('students')
-        .select('*, subject:subjects(name)')
+        .select('*, subject:subjects(name), classes:class_students(class:classes(id, name))')
         .order('full_name');
       if (error) throw error;
       return (data ?? []) as unknown as StudentWithSubject[];
@@ -34,12 +34,15 @@ export type StudentInput = {
 export function useCreateStudent() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (input: StudentInput) => {
+    mutationFn: async (input: StudentInput): Promise<{ id: string }> => {
       const { data: auth } = await supabase.auth.getUser();
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('students')
-        .insert({ ...input, created_by: auth.user?.id ?? null });
+        .insert({ ...input, created_by: auth.user?.id ?? null })
+        .select('id')
+        .single();
       if (error) throw error;
+      return data;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: studentKeys.all }),
   });

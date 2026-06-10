@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
@@ -46,6 +46,7 @@ export function ClassFormModal({ open, onClose, classItem }: Props) {
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -103,23 +104,37 @@ export function ClassFormModal({ open, onClose, classItem }: Props) {
     >
       <form id="class-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <Input label={t('classes.name')} error={errors.name?.message} {...register('name')} />
-        <Select label={t('classes.subject')} {...register('subject_id')}>
-          <option value="">{t('common.none')}</option>
-          {subjects?.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </Select>
+        <Controller
+          control={control}
+          name="subject_id"
+          render={({ field }) => (
+            <Select
+              label={t('classes.subject')}
+              value={field.value}
+              onValueChange={field.onChange}
+              options={[
+                { value: '', label: t('common.none') },
+                ...(subjects ?? []).map((s) => ({ value: s.id, label: s.name })),
+              ]}
+            />
+          )}
+        />
         {isAdmin && (
-          <Select label={t('classes.teacher')} {...register('teacher_id')}>
-            <option value="">{t('common.none')}</option>
-            {teachers?.map((teacher) => (
-              <option key={teacher.id} value={teacher.id}>
-                {teacher.full_name}
-              </option>
-            ))}
-          </Select>
+          <Controller
+            control={control}
+            name="teacher_id"
+            render={({ field }) => (
+              <Select
+                label={t('classes.teacher')}
+                value={field.value}
+                onValueChange={field.onChange}
+                options={[
+                  { value: '', label: t('common.none') },
+                  ...(teachers ?? []).map((teacher) => ({ value: teacher.id, label: teacher.full_name })),
+                ]}
+              />
+            )}
+          />
         )}
         <div className="grid grid-cols-2 gap-3">
           <Input

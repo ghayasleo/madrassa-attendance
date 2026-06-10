@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Madrassa Attendance app icon">
+  <rect width="512" height="512" fill="#14532d"/>
+  <rect x="72" y="72" width="368" height="368" rx="96" fill="#166534"/>
+  <path d="M144 156c46.4 0 82.4 9.6 112 32.8 29.6-23.2 65.6-32.8 112-32.8v200c-46.4 0-82.4 9.6-112 32.8-29.6-23.2-65.6-32.8-112-32.8V156Z" fill="#ecfdf5"/>
+  <path d="M256 188v192" stroke="#16a34a" stroke-width="24" stroke-linecap="round"/>
+  <path d="m196 280 38 38 86-96" fill="none" stroke="#14532d" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

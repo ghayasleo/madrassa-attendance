@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
-import type { Database, Student } from '@/types/database';
+import type { Database, Student, ClassRow } from '@/types/database';
 import type { ClassWithMeta } from '@/types/app';
 
 type ClassUpdate = Database['public']['Tables']['classes']['Update'];
@@ -8,6 +8,10 @@ type ClassUpdate = Database['public']['Tables']['classes']['Update'];
 export const classKeys = {
   all: ['classes'] as const,
   students: (classId: string) => ['classes', classId, 'students'] as const,
+};
+
+export const studentClassKeys = {
+  forStudent: (studentId: string) => ['students', studentId, 'classes'] as const,
 };
 
 export function useClasses() {
@@ -84,6 +88,25 @@ export function useClassStudents(classId: string | null) {
   });
 }
 
+/** Classes a given student is enrolled in. */
+export function useStudentClasses(studentId: string | null) {
+  return useQuery({
+    queryKey: studentId ? studentClassKeys.forStudent(studentId) : ['students', 'none', 'classes'],
+    enabled: !!studentId,
+    queryFn: async (): Promise<ClassRow[]> => {
+      const { data, error } = await supabase
+        .from('class_students')
+        .select('class:classes(*)')
+        .eq('student_id', studentId!);
+      if (error) throw error;
+      return (data ?? [])
+        .map((row) => (row as unknown as { class: ClassRow | null }).class)
+        .filter((c): c is ClassRow => !!c)
+        .sort((a, b) => a.start_time.localeCompare(b.start_time));
+    },
+  });
+}
+
 /** Raised when the DB overlap trigger rejects an enrolment. */
 export class ClassOverlapError extends Error {
   conflictName: string;
@@ -107,9 +130,10 @@ export function useEnrollStudent() {
         throw error;
       }
     },
-    onSuccess: (_data, { classId }) => {
+    onSuccess: (_data, { classId, studentId }) => {
       void qc.invalidateQueries({ queryKey: classKeys.students(classId) });
       void qc.invalidateQueries({ queryKey: classKeys.all });
+      void qc.invalidateQueries({ queryKey: studentClassKeys.forStudent(studentId) });
     },
   });
 }
@@ -125,9 +149,10 @@ export function useUnenrollStudent() {
         .eq('student_id', studentId);
       if (error) throw error;
     },
-    onSuccess: (_data, { classId }) => {
+    onSuccess: (_data, { classId, studentId }) => {
       void qc.invalidateQueries({ queryKey: classKeys.students(classId) });
       void qc.invalidateQueries({ queryKey: classKeys.all });
+      void qc.invalidateQueries({ queryKey: studentClassKeys.forStudent(studentId) });
     },
   });
 }

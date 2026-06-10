@@ -92,33 +92,27 @@ export function ReportsPage() {
             <Select
               label={t('reports.scope')}
               value={scope}
-              onChange={(e) => {
-                setScope(e.target.value as ReportScope);
+              onValueChange={(value) => {
+                setScope(value as ReportScope);
                 setTargetId('');
               }}
-            >
-              <option value="class">{t('reports.byClass')}</option>
-              <option value="student">{t('reports.byStudent')}</option>
-            </Select>
+              options={[
+                { value: 'class', label: t('reports.byClass') },
+                { value: 'student', label: t('reports.byStudent') },
+              ]}
+            />
 
             <Select
               label={scope === 'class' ? t('reports.class') : t('reports.student')}
+              placeholder={`${t('common.select')}…`}
               value={targetId}
-              onChange={(e) => setTargetId(e.target.value)}
-            >
-              <option value="">{t('common.select')}…</option>
-              {scope === 'class'
-                ? classes?.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))
-                : students?.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.full_name}
-                    </option>
-                  ))}
-            </Select>
+              onValueChange={(value) => setTargetId(value)}
+              options={
+                scope === 'class'
+                  ? (classes ?? []).map((c) => ({ value: c.id, label: c.name }))
+                  : (students ?? []).map((s) => ({ value: s.id, label: s.full_name }))
+              }
+            />
           </div>
 
           <div>

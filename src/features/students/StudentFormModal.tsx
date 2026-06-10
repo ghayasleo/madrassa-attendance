@@ -1,13 +1,24 @@
-import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useTranslation } from 'react-i18next';
 import { Modal } from '@/components/ui/Modal';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { MultiSelect } from '@/components/ui/MultiSelect';
 import { Button } from '@/components/ui/Button';
 import { useToast } from '@/context/ToastContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useSubjects } from '@/features/subjects/api';
+import {
+  useClasses,
+  useStudentClasses,
+  useEnrollStudent,
+  useUnenrollStudent,
+  ClassOverlapError,
+} from '@/features/classes/api';
+import { formatTime } from '@/lib/utils';
 import type { StudentWithSubject } from '@/types/app';
 import { useCreateStudent, useUpdateStudent } from './api';
 
@@ -19,11 +30,24 @@ type Props = {
 
 export function StudentFormModal({ open, onClose, student }: Props) {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const toast = useToast();
   const isEdit = !!student;
   const { data: subjects } = useSubjects();
+  const { data: classes } = useClasses();
+  const { data: enrolledClasses } = useStudentClasses(student?.id ?? null);
   const createStudent = useCreateStudent();
   const updateStudent = useUpdateStudent();
+  const enrollStudent = useEnrollStudent();
+  const unenrollStudent = useUnenrollStudent();
+
+  const [classIds, setClassIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (open) {
+      setClassIds((enrolledClasses ?? []).map((c) => c.id));
+    }
+  }, [open, enrolledClasses]);
 
   const schema = z.object({
     full_name: z.string().min(1, t('errors.required')),
@@ -35,6 +59,7 @@ export function StudentFormModal({ open, onClose, student }: Props) {
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -58,13 +83,37 @@ export function StudentFormModal({ open, onClose, student }: Props) {
       subject_id: values.subject_id || null,
     };
     try {
+      let studentId: string;
       if (isEdit && student) {
         await updateStudent.mutateAsync({ id: student.id, ...payload });
+        studentId = student.id;
         toast.success(t('students.updated'));
       } else {
-        await createStudent.mutateAsync(payload);
+        const created = await createStudent.mutateAsync(payload);
+        studentId = created.id;
         toast.success(t('students.created'));
       }
+
+      const originalIds = new Set((enrolledClasses ?? []).map((c) => c.id));
+      const nextIds = new Set(classIds);
+      const toAdd = [...nextIds].filter((id) => !originalIds.has(id));
+      const toRemove = [...originalIds].filter((id) => !nextIds.has(id));
+
+      for (const classId of toRemove) {
+        await unenrollStudent.mutateAsync({ classId, studentId });
+      }
+      for (const classId of toAdd) {
+        try {
+          await enrollStudent.mutateAsync({ classId, studentId });
+        } catch (e) {
+          if (e instanceof ClassOverlapError) {
+            toast.error(t('errors.classOverlap', { name: e.conflictName }));
+          } else {
+            throw e;
+          }
+        }
+      }
+
       reset();
       onClose();
     } catch (e) {
@@ -92,14 +141,33 @@ export function StudentFormModal({ open, onClose, student }: Props) {
         <Input label={t('students.fullName')} error={errors.full_name?.message} {...register('full_name')} />
         <Input label={t('students.guardianName')} {...register('guardian_name')} />
         <Input label={t('students.phone')} type="tel" {...register('phone')} />
-        <Select label={t('students.subject')} {...register('subject_id')}>
-          <option value="">{t('common.none')}</option>
-          {subjects?.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </Select>
+        <Controller
+          control={control}
+          name="subject_id"
+          render={({ field }) => (
+            <Select
+              label={t('students.subject')}
+              value={field.value}
+              onValueChange={field.onChange}
+              options={[
+                { value: '', label: t('common.none') },
+                ...(subjects ?? []).map((s) => ({ value: s.id, label: s.name })),
+              ]}
+            />
+          )}
+        />
+        <MultiSelect
+          label={t('students.enrolledClasses')}
+          placeholder={t('common.select') + '…'}
+          emptyText={t('common.noData')}
+          values={classIds}
+          onChange={setClassIds}
+          options={(classes ?? []).map((c) => ({
+            value: c.id,
+            label: c.name,
+            description: `${formatTime(c.start_time, language)} – ${formatTime(c.end_time, language)}`,
+          }))}
+        />
       </form>
     </Modal>
   );

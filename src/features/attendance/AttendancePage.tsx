@@ -89,16 +89,11 @@ export function AttendancePage() {
         <div className="grid gap-3 sm:grid-cols-2">
           <Select
             label={t('attendance.selectClass')}
+            placeholder={`${t('common.select')}…`}
             value={classId}
-            onChange={(e) => setClass(e.target.value)}
-          >
-            <option value="">{t('common.select')}…</option>
-            {classes?.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </Select>
+            onValueChange={(value) => setClass(value)}
+            options={(classes ?? []).map((c) => ({ value: c.id, label: c.name }))}
+          />
           <Input
             label={t('common.date')}
             type="date"

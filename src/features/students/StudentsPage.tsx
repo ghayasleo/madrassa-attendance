@@ -101,9 +101,17 @@ export function StudentsPage() {
                   <p className="truncate text-sm text-gray-500">{student.guardian_name}</p>
                 )}
                 {student.phone && <p className="text-sm text-gray-500">{student.phone}</p>}
-                {student.subject && (
-                  <div className="mt-2">
-                    <Badge tone="blue">{student.subject.name}</Badge>
+                {(student.subject || student.classes.length > 0) && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {student.subject && <Badge tone="blue">{student.subject.name}</Badge>}
+                    {student.classes
+                      .map((c) => c.class)
+                      .filter((c): c is { id: string; name: string } => !!c)
+                      .map((c) => (
+                        <Badge key={c.id} tone="green">
+                          {c.name}
+                        </Badge>
+                      ))}
                   </div>
                 )}
               </div>

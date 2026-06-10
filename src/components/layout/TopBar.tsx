@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { LogOut, BookOpenCheck } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { LanguageToggle } from './LanguageToggle';
 
@@ -10,7 +10,7 @@ export function TopBar() {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4">
       <div className="flex items-center gap-2">
-        <BookOpenCheck className="size-6 text-brand-600" />
+        <img src="/brand/logo-mark.svg" alt="" className="size-8 rounded-lg" />
         <span className="font-semibold text-gray-900">{t('common.appName')}</span>
       </div>
       <div className="flex items-center gap-1">

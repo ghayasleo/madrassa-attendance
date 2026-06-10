@@ -38,9 +38,9 @@ export function DashboardPage() {
       {!classes || classes.length === 0 ? (
         <EmptyState title={t('dashboard.noClassesToday')} />
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {classes.map((c) => (
-            <Link key={c.id} to={`/attendance?class=${c.id}`}>
+            <Link key={c.id} to={`/attendance?class=${c.id}`} className="block">
               <Card className="flex items-center justify-between gap-3 p-4 transition-colors hover:bg-gray-50">
                 <div className="flex items-center gap-3">
                   <div className="flex size-10 items-center justify-center rounded-xl bg-brand-50 text-brand-600">
