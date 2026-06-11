@@ -2,6 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { TopBar } from './TopBar';
 import { Sidebar } from './Sidebar';
 import { BottomNav } from './BottomNav';
+import { MadrassaBanner } from './MadrassaBanner';
 
 export function AppLayout() {
   return (
@@ -10,6 +11,7 @@ export function AppLayout() {
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex-1 overflow-x-hidden">
+          <MadrassaBanner />
           <div className="mx-auto w-full max-w-4xl p-4 pb-24 md:pb-8">
             <Outlet />
           </div>

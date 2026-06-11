@@ -2,14 +2,16 @@ import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Settings, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useActiveMadrassa } from '@/context/ActiveMadrassaContext';
 import { InstallAppButton } from './InstallAppButton';
 import { visibleNavItems } from './navItems';
 import { cn } from '@/lib/utils';
 
 export function Sidebar() {
   const { t } = useTranslation();
-  const { isAdmin, signOut } = useAuth();
-  const items = visibleNavItems(isAdmin);
+  const { isAdmin, isSuperAdmin, signOut } = useAuth();
+  const { isImpersonating } = useActiveMadrassa();
+  const items = visibleNavItems({ isAdmin, isSuperAdmin, isImpersonating });
 
   return (
     <aside className="hidden w-60 shrink-0 md:block">

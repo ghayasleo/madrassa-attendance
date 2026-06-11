@@ -1,19 +1,24 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
+import { useActiveMadrassaId } from '@/context/ActiveMadrassaContext';
 import type { Profile } from '@/types/database';
 
 export const teacherKeys = {
   all: ['teachers'] as const,
+  list: (madrassaId: string | null) => ['teachers', madrassaId] as const,
 };
 
 export function useTeachers() {
+  const madrassaId = useActiveMadrassaId();
   return useQuery({
-    queryKey: teacherKeys.all,
+    queryKey: teacherKeys.list(madrassaId),
+    enabled: !!madrassaId,
     queryFn: async (): Promise<Profile[]> => {
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('role', 'teacher')
+        .eq('madrassa_id', madrassaId!)
         .order('created_at', { ascending: false });
       if (error) throw error;
       return data ?? [];

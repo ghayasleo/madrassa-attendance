@@ -9,6 +9,9 @@ type AuthContextValue = {
   profile: Profile | null;
   loading: boolean;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
+  /** The user's own madrassa (null for super_admin). */
+  madrassaId: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -83,6 +86,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       profile,
       loading,
       isAdmin: profile?.role === 'admin',
+      isSuperAdmin: profile?.role === 'super_admin',
+      madrassaId: profile?.madrassa_id ?? null,
       signIn,
       signOut,
       refreshProfile,

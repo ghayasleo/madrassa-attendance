@@ -1,13 +1,15 @@
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/context/AuthContext';
+import { useActiveMadrassa } from '@/context/ActiveMadrassaContext';
 import { visibleNavItems } from './navItems';
 import { cn } from '@/lib/utils';
 
 export function BottomNav() {
   const { t } = useTranslation();
-  const { isAdmin } = useAuth();
-  const items = visibleNavItems(isAdmin);
+  const { isAdmin, isSuperAdmin } = useAuth();
+  const { isImpersonating } = useActiveMadrassa();
+  const items = visibleNavItems({ isAdmin, isSuperAdmin, isImpersonating });
 
   return (
     <nav className="safe-bottom sticky bottom-0 z-30 border-t border-gray-200 bg-white md:hidden">

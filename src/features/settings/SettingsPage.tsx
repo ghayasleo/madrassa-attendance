@@ -30,7 +30,8 @@ type PasswordValues = z.infer<typeof passwordSchema>;
 export function SettingsPage() {
   const { t } = useTranslation();
   const toast = useToast();
-  const { profile, isAdmin, refreshProfile } = useAuth();
+  const { profile, isAdmin, isSuperAdmin, refreshProfile } = useAuth();
+  const canChangePassword = isAdmin || isSuperAdmin;
   const updateProfile = useUpdateOwnProfile();
   const changePassword = useChangePassword();
 
@@ -100,7 +101,7 @@ export function SettingsPage() {
         </CardBody>
       </Card>
 
-      {isAdmin && (
+      {canChangePassword && (
         <Card>
           <CardHeader title={t('settings.changePassword')} />
           <CardBody>
@@ -131,7 +132,7 @@ export function SettingsPage() {
         </Card>
       )}
 
-      {!isAdmin && <p className="px-1 text-sm text-gray-500">{t('settings.passwordHint')}</p>}
+      {!canChangePassword && <p className="px-1 text-sm text-gray-500">{t('settings.passwordHint')}</p>}
     </div>
   );
 }

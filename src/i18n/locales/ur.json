@@ -47,7 +47,10 @@
     "attendance": "حاضری",
     "reports": "رپورٹس",
     "settings": "ترتیبات",
-    "installApp": "ایپ انسٹال کریں"
+    "installApp": "ایپ انسٹال کریں",
+    "overview": "جائزہ",
+    "madrassas": "مدارس",
+    "users": "صارفین"
   },
   "auth": {
     "title": "سائن ان",
@@ -60,8 +63,54 @@
     "sessionExpired": "آپ کا سیشن ختم ہو گیا۔ دوبارہ سائن ان کریں۔"
   },
   "roles": {
+    "super_admin": "سپر ایڈمن",
     "admin": "ایڈمن",
     "teacher": "استاد"
+  },
+  "superAdmin": {
+    "welcome": "خوش آمدید، {{name}}"
+  },
+  "madrassas": {
+    "title": "مدارس",
+    "add": "مدرسہ شامل کریں",
+    "edit": "مدرسہ میں ترمیم کریں",
+    "name": "نام",
+    "address": "پتہ",
+    "phone": "فون",
+    "empty": "ابھی کوئی مدرسہ نہیں۔ پہلا شامل کریں۔",
+    "created": "مدرسہ شامل ہو گیا۔",
+    "updated": "مدرسہ اپ ڈیٹ ہو گیا۔",
+    "deleted": "مدرسہ حذف ہو گیا۔",
+    "confirmDelete": "یہ مدرسہ حذف کریں؟ اس کے تمام صارفین، طلباء، کلاسیں اور حاضری مستقل طور پر حذف ہو جائیں گی۔",
+    "open": "کھولیں",
+    "viewing": "دیکھ رہے ہیں: {{name}}",
+    "exit": "باہر نکلیں",
+    "count": "{{count}} مدارس",
+    "memberCount": "{{count}} اراکین",
+    "studentCount": "{{count}} طلباء"
+  },
+  "users": {
+    "title": "صارفین",
+    "add": "صارف شامل کریں",
+    "edit": "صارف میں ترمیم کریں",
+    "fullName": "پورا نام",
+    "email": "ای میل",
+    "phone": "فون",
+    "role": "کردار",
+    "madrassa": "مدرسہ",
+    "password": "پاس ورڈ",
+    "empty": "ابھی کوئی صارف نہیں۔ پہلا شامل کریں۔",
+    "created": "صارف بنا دیا گیا۔",
+    "updated": "صارف اپ ڈیٹ ہو گیا۔",
+    "deleted": "صارف حذف ہو گیا۔",
+    "confirmDelete": "یہ صارف حذف کریں؟ ان کا اکاؤنٹ اور رسائی مستقل طور پر حذف ہو جائے گی۔",
+    "inactive": "غیر فعال",
+    "count": "{{count}} صارفین",
+    "resetPassword": "پاس ورڈ ری سیٹ کریں",
+    "resetPasswordFor": "{{name}} کا پاس ورڈ ری سیٹ کریں",
+    "newPassword": "نیا پاس ورڈ",
+    "confirmPassword": "نئے پاس ورڈ کی تصدیق کریں",
+    "passwordChanged": "پاس ورڈ اپ ڈیٹ ہو گیا۔"
   },
   "dashboard": {
     "welcome": "خوش آمدید، {{name}}",

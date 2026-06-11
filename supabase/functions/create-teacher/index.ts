@@ -61,12 +61,15 @@ Deno.serve(async (req) => {
     });
     const { data: callerProfile } = await admin
       .from('profiles')
-      .select('role, is_active')
+      .select('role, is_active, madrassa_id')
       .eq('id', user.id)
       .single();
 
     if (!callerProfile || callerProfile.role !== 'admin' || !callerProfile.is_active) {
       return json(403, { error: 'Only an admin can create teachers' });
+    }
+    if (!callerProfile.madrassa_id) {
+      return json(400, { error: 'Your account is not assigned to a madrassa' });
     }
 
     // 3. Validate input.
@@ -98,6 +101,7 @@ Deno.serve(async (req) => {
       full_name,
       email,
       phone,
+      madrassa_id: callerProfile.madrassa_id,
     });
     if (profileErr) {
       await admin.auth.admin.deleteUser(created.user.id);

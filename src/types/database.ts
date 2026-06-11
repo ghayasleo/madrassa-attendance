@@ -2,7 +2,7 @@
 // Keep in sync with the SQL, or regenerate with:
 //   supabase gen types typescript --project-id <ref> > src/types/database.ts
 
-export type Role = 'admin' | 'teacher';
+export type Role = 'super_admin' | 'admin' | 'teacher';
 export type AttendanceStatus = 'present' | 'absent' | 'late' | 'excused';
 
 type Timestamps = {
@@ -13,6 +13,24 @@ type Timestamps = {
 export interface Database {
   public: {
     Tables: {
+      madrassas: {
+        Row: {
+          id: string;
+          name: string;
+          address: string | null;
+          phone: string | null;
+          is_active: boolean;
+        } & Timestamps;
+        Insert: {
+          id?: string;
+          name: string;
+          address?: string | null;
+          phone?: string | null;
+          is_active?: boolean;
+        };
+        Update: Partial<Database['public']['Tables']['madrassas']['Insert']>;
+        Relationships: [];
+      };
       profiles: {
         Row: {
           id: string;
@@ -21,6 +39,7 @@ export interface Database {
           email: string;
           phone: string | null;
           is_active: boolean;
+          madrassa_id: string | null;
         } & Timestamps;
         Insert: {
           id: string;
@@ -29,14 +48,15 @@ export interface Database {
           email: string;
           phone?: string | null;
           is_active?: boolean;
+          madrassa_id?: string | null;
         };
         Update: Partial<Database['public']['Tables']['profiles']['Insert']>;
         Relationships: [];
       };
       subjects: {
-        Row: { id: string; name: string; created_at: string };
-        Insert: { id?: string; name: string; created_at?: string };
-        Update: Partial<{ id: string; name: string }>;
+        Row: { id: string; name: string; madrassa_id: string; created_at: string };
+        Insert: { id?: string; name: string; madrassa_id: string; created_at?: string };
+        Update: Partial<{ id: string; name: string; madrassa_id: string }>;
         Relationships: [];
       };
       students: {
@@ -48,6 +68,7 @@ export interface Database {
           subject_id: string | null;
           is_active: boolean;
           created_by: string | null;
+          madrassa_id: string;
         } & Timestamps;
         Insert: {
           id?: string;
@@ -57,6 +78,7 @@ export interface Database {
           subject_id?: string | null;
           is_active?: boolean;
           created_by?: string | null;
+          madrassa_id: string;
         };
         Update: Partial<Database['public']['Tables']['students']['Insert']>;
         Relationships: [];
@@ -70,6 +92,7 @@ export interface Database {
           start_time: string;
           end_time: string;
           is_active: boolean;
+          madrassa_id: string;
         } & Timestamps;
         Insert: {
           id?: string;
@@ -79,6 +102,7 @@ export interface Database {
           start_time: string;
           end_time: string;
           is_active?: boolean;
+          madrassa_id: string;
         };
         Update: Partial<Database['public']['Tables']['classes']['Insert']>;
         Relationships: [];
@@ -88,10 +112,17 @@ export interface Database {
           id: string;
           class_id: string;
           student_id: string;
+          madrassa_id: string;
           created_at: string;
         };
-        Insert: { id?: string; class_id: string; student_id: string; created_at?: string };
-        Update: Partial<{ class_id: string; student_id: string }>;
+        Insert: {
+          id?: string;
+          class_id: string;
+          student_id: string;
+          madrassa_id: string;
+          created_at?: string;
+        };
+        Update: Partial<{ class_id: string; student_id: string; madrassa_id: string }>;
         Relationships: [];
       };
       attendance: {
@@ -103,6 +134,7 @@ export interface Database {
           status: AttendanceStatus;
           note: string | null;
           marked_by: string | null;
+          madrassa_id: string;
         } & Timestamps;
         Insert: {
           id?: string;
@@ -112,6 +144,7 @@ export interface Database {
           status?: AttendanceStatus;
           note?: string | null;
           marked_by?: string | null;
+          madrassa_id: string;
         };
         Update: Partial<Database['public']['Tables']['attendance']['Insert']>;
         Relationships: [];
@@ -121,12 +154,15 @@ export interface Database {
     Functions: {
       is_admin: { Args: Record<string, never>; Returns: boolean };
       is_staff: { Args: Record<string, never>; Returns: boolean };
+      is_super_admin: { Args: Record<string, never>; Returns: boolean };
+      current_madrassa_id: { Args: Record<string, never>; Returns: string | null };
     };
     Enums: Record<string, never>;
   };
 }
 
 // Convenience row aliases
+export type Madrassa = Database['public']['Tables']['madrassas']['Row'];
 export type Profile = Database['public']['Tables']['profiles']['Row'];
 export type Subject = Database['public']['Tables']['subjects']['Row'];
 export type Student = Database['public']['Tables']['students']['Row'];

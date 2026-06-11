@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/lib/supabase';
+import { useActiveMadrassaId } from '@/context/ActiveMadrassaContext';
 import type { Database, Student, ClassRow } from '@/types/database';
 import type { ClassWithMeta } from '@/types/app';
 
@@ -7,6 +8,7 @@ type ClassUpdate = Database['public']['Tables']['classes']['Update'];
 
 export const classKeys = {
   all: ['classes'] as const,
+  list: (madrassaId: string | null) => ['classes', madrassaId] as const,
   students: (classId: string) => ['classes', classId, 'students'] as const,
 };
 
@@ -15,12 +17,15 @@ export const studentClassKeys = {
 };
 
 export function useClasses() {
+  const madrassaId = useActiveMadrassaId();
   return useQuery({
-    queryKey: classKeys.all,
+    queryKey: classKeys.list(madrassaId),
+    enabled: !!madrassaId,
     queryFn: async (): Promise<ClassWithMeta[]> => {
       const { data, error } = await supabase
         .from('classes')
         .select('*, subject:subjects(name), teacher:profiles(full_name), enrollment:class_students(count)')
+        .eq('madrassa_id', madrassaId!)
         .order('start_time');
       if (error) throw error;
       return (data ?? []) as unknown as ClassWithMeta[];
@@ -38,9 +43,11 @@ export type ClassInput = {
 
 export function useCreateClass() {
   const qc = useQueryClient();
+  const madrassaId = useActiveMadrassaId();
   return useMutation({
     mutationFn: async (input: ClassInput) => {
-      const { error } = await supabase.from('classes').insert(input);
+      if (!madrassaId) throw new Error('No active madrassa');
+      const { error } = await supabase.from('classes').insert({ ...input, madrassa_id: madrassaId });
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: classKeys.all }),
@@ -119,11 +126,13 @@ export class ClassOverlapError extends Error {
 
 export function useEnrollStudent() {
   const qc = useQueryClient();
+  const madrassaId = useActiveMadrassaId();
   return useMutation({
     mutationFn: async ({ classId, studentId }: { classId: string; studentId: string }) => {
+      if (!madrassaId) throw new Error('No active madrassa');
       const { error } = await supabase
         .from('class_students')
-        .insert({ class_id: classId, student_id: studentId });
+        .insert({ class_id: classId, student_id: studentId, madrassa_id: madrassaId });
       if (error) {
         const match = /CLASS_TIME_OVERLAP:\s*(.*)$/.exec(error.message);
         if (match) throw new ClassOverlapError(match[1].trim());

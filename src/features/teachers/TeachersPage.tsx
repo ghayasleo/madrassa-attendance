@@ -9,6 +9,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { PageLoader } from '@/components/ui/Spinner';
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import { useToast } from '@/context/ToastContext';
+import { useAuth } from '@/context/AuthContext';
 import type { Profile } from '@/types/database';
 import { useTeachers, useUpdateTeacher } from './api';
 import { TeacherFormModal } from './TeacherFormModal';
@@ -16,6 +17,7 @@ import { TeacherFormModal } from './TeacherFormModal';
 export function TeachersPage() {
   const { t } = useTranslation();
   const toast = useToast();
+  const { isAdmin } = useAuth();
   const { data: teachers, isLoading } = useTeachers();
   const updateTeacher = useUpdateTeacher();
 
@@ -49,9 +51,11 @@ export function TeachersPage() {
       <PageHeader
         title={t('teachers.title')}
         action={
-          <Button leftIcon={<Plus className="size-4" />} onClick={openCreate}>
-            {t('teachers.add')}
-          </Button>
+          isAdmin ? (
+            <Button leftIcon={<Plus className="size-4" />} onClick={openCreate}>
+              {t('teachers.add')}
+            </Button>
+          ) : undefined
         }
       />
 
@@ -62,9 +66,11 @@ export function TeachersPage() {
           icon={<UserCog className="size-10" />}
           title={t('teachers.empty')}
           action={
-            <Button leftIcon={<Plus className="size-4" />} onClick={openCreate}>
-              {t('teachers.add')}
-            </Button>
+            isAdmin ? (
+              <Button leftIcon={<Plus className="size-4" />} onClick={openCreate}>
+                {t('teachers.add')}
+              </Button>
+            ) : undefined
           }
         />
       ) : (

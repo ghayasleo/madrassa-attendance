@@ -47,7 +47,10 @@
     "attendance": "Attendance",
     "reports": "Reports",
     "settings": "Settings",
-    "installApp": "Install app"
+    "installApp": "Install app",
+    "overview": "Overview",
+    "madrassas": "Madrassas",
+    "users": "Users"
   },
   "auth": {
     "title": "Sign in",
@@ -60,8 +63,54 @@
     "sessionExpired": "Your session expired. Please sign in again."
   },
   "roles": {
+    "super_admin": "Super Admin",
     "admin": "Admin",
     "teacher": "Teacher"
+  },
+  "superAdmin": {
+    "welcome": "Welcome, {{name}}"
+  },
+  "madrassas": {
+    "title": "Madrassas",
+    "add": "Add madrassa",
+    "edit": "Edit madrassa",
+    "name": "Name",
+    "address": "Address",
+    "phone": "Phone",
+    "empty": "No madrassas yet. Add your first one.",
+    "created": "Madrassa added.",
+    "updated": "Madrassa updated.",
+    "deleted": "Madrassa deleted.",
+    "confirmDelete": "Delete this madrassa? All of its users, students, classes and attendance will be permanently removed.",
+    "open": "Open",
+    "viewing": "Viewing: {{name}}",
+    "exit": "Exit",
+    "count": "{{count}} madrassas",
+    "memberCount": "{{count}} members",
+    "studentCount": "{{count}} students"
+  },
+  "users": {
+    "title": "Users",
+    "add": "Add user",
+    "edit": "Edit user",
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "role": "Role",
+    "madrassa": "Madrassa",
+    "password": "Password",
+    "empty": "No users yet. Add your first one.",
+    "created": "User created.",
+    "updated": "User updated.",
+    "deleted": "User deleted.",
+    "confirmDelete": "Delete this user? Their account and access will be permanently removed.",
+    "inactive": "Inactive",
+    "count": "{{count}} users",
+    "resetPassword": "Reset password",
+    "resetPasswordFor": "Reset password for {{name}}",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "passwordChanged": "Password updated."
   },
   "dashboard": {
     "welcome": "Welcome, {{name}}",
