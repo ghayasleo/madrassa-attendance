@@ -17,10 +17,11 @@ export function Sidebar() {
     <aside className="hidden w-60 shrink-0 md:block">
       <div className="fixed inset-y-0 start-0 top-14 flex h-[calc(100dvh-3.5rem)] w-60 flex-col border-e border-gray-200 bg-white">
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
-          {items.map(({ to, labelKey, icon: Icon }) => (
+          {items.map(({ to, labelKey, icon: Icon, end }) => (
             <NavLink
               key={to}
               to={to}
+              end={end}
               className={({ isActive }) =>
                 cn(
                   'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',

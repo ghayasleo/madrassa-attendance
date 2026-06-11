@@ -14,23 +14,27 @@ export type NavItem = {
   labelKey: string;
   icon: LucideIcon;
   adminOnly?: boolean;
+  /** Match the route exactly (so a parent like /admin isn't active on /admin/users). */
+  end?: boolean;
+  /** Show in the mobile bottom bar. Non-primary items move into the "More" sheet. */
+  primary?: boolean;
 };
 
 /** The per-madrassa app navigation (admins, teachers, impersonating super-admin). */
 export const APP_NAV_ITEMS: NavItem[] = [
-  { to: '/dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard },
-  { to: '/attendance', labelKey: 'nav.attendance', icon: ClipboardCheck },
-  { to: '/classes', labelKey: 'nav.classes', icon: BookOpen },
-  { to: '/students', labelKey: 'nav.students', icon: Users },
+  { to: '/dashboard', labelKey: 'nav.dashboard', icon: LayoutDashboard, primary: true },
+  { to: '/attendance', labelKey: 'nav.attendance', icon: ClipboardCheck, primary: true },
+  { to: '/classes', labelKey: 'nav.classes', icon: BookOpen, primary: true },
+  { to: '/students', labelKey: 'nav.students', icon: Users, primary: true },
   { to: '/teachers', labelKey: 'nav.teachers', icon: GraduationCap, adminOnly: true },
   { to: '/reports', labelKey: 'nav.reports', icon: BarChart3 },
 ];
 
 /** The super-admin management navigation (no madrassa selected). */
 export const SUPER_NAV_ITEMS: NavItem[] = [
-  { to: '/admin', labelKey: 'nav.overview', icon: LayoutDashboard },
-  { to: '/admin/madrassas', labelKey: 'nav.madrassas', icon: Building2 },
-  { to: '/admin/users', labelKey: 'nav.users', icon: Users },
+  { to: '/admin', labelKey: 'nav.overview', icon: LayoutDashboard, end: true, primary: true },
+  { to: '/admin/madrassas', labelKey: 'nav.madrassas', icon: Building2, primary: true },
+  { to: '/admin/users', labelKey: 'nav.users', icon: Users, primary: true },
 ];
 
 export type NavContext = {

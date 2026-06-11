@@ -50,7 +50,8 @@
     "installApp": "Install app",
     "overview": "Overview",
     "madrassas": "Madrassas",
-    "users": "Users"
+    "users": "Users",
+    "more": "More"
   },
   "auth": {
     "title": "Sign in",
