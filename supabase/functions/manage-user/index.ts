@@ -47,14 +47,19 @@ Deno.serve(async (req) => {
     const anonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-    // 1. Identify the caller.
+    // 1. Identify the caller. Pass the bearer token explicitly to getUser():
+    //    the no-arg form depends on session storage that doesn't exist in an
+    //    edge function, and its header-reading behaviour drifts across
+    //    supabase-js patch versions.
+    const token = authHeader.replace(/^Bearer\s+/i, '');
     const caller = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: authHeader } },
+      auth: { autoRefreshToken: false, persistSession: false },
     });
-    const {
-      data: { user },
-    } = await caller.auth.getUser();
-    if (!user) return json(401, { error: 'Invalid session' });
+    const { data: { user }, error: userErr } = await caller.auth.getUser(token);
+    if (userErr || !user) {
+      return json(401, { error: `Invalid session${userErr ? `: ${userErr.message}` : ''}` });
+    }
 
     // 2. Confirm the caller is an active super_admin (service role bypasses RLS).
     const admin = createClient(supabaseUrl, serviceKey, {
